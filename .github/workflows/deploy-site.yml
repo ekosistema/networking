@@ -1,19 +1,25 @@
 name: Desplegar sitio
 
+# En un push a main: comprueba, compila, audita y publica.
+# En un pull request (por ejemplo, las de Dependabot): solo comprueba, compila y audita; nunca publica.
 on:
   push:
     branches: [main]
     paths: ['0*/**', 'README.md', 'site/**', 'scripts/**', 'LICENSE', '.github/workflows/deploy-site.yml']
+  pull_request:
+    branches: [main]
+    paths: ['0*/**', 'README.md', 'site/**', 'scripts/**', 'LICENSE', '.github/workflows/deploy-site.yml']
   workflow_dispatch:
 
+# Permisos mínimos para todo el flujo; la publicación pide los suyos solo en el trabajo de despliegue.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
+# Un grupo por rama: una PR nueva cancela la comprobación anterior de esa misma PR, pero nunca interrumpe
+# un despliegue en curso de main.
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: pages-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -43,13 +49,21 @@ jobs:
         working-directory: site
         env:
           SITE_URL: https://networking.celerolab.com
-      - uses: actions/upload-pages-artifact@v4
+      - name: Preparar artefacto de Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
         with:
           path: site/dist
 
   deploy:
+    # Solo en main (push o ejecución manual): una PR, aunque la abra un bot, nunca publica.
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
