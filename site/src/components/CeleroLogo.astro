@@ -1,0 +1,16 @@
+---
+// Logotipo oficial de CeleroLab (celerolab.com). Dos variantes según el tema: la oficial para fondos
+// oscuros y la misma con el texto en tinta oscura para fondos claros. No deformar ni recolorear más.
+const { height = 24, class: cls = '' } = Astro.props as { height?: number; class?: string };
+const width = Math.round((height * 386) / 77.333);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<img class:list={['celero-logo', 'on-dark', cls]} src={`${base}/brand/celerolab-logo-on-dark.svg`} alt="CeleroLab" width={width} height={height} decoding="async" />
+<img class:list={['celero-logo', 'on-light', cls]} src={`${base}/brand/celerolab-logo-on-light.svg`} alt="CeleroLab" width={width} height={height} decoding="async" />
+
+<style is:global>
+  .celero-logo { display: block; height: auto; max-width: 100%; }
+  :root[data-theme='light'] .celero-logo.on-dark { display: none; }
+  :root:not([data-theme='light']) .celero-logo.on-light { display: none; }
+</style>

@@ -1,0 +1,84 @@
+---
+// <head> de Starlight + precarga de la tipografía crítica + datos estructurados JSON-LD (SEO y GEO).
+// Todo se genera en el build (HTML estático): los rastreadores y los asistentes de IA no necesitan ejecutar JS.
+import Default from '@astrojs/starlight/components/Head.astro';
+import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url';
+import { crumbsFor, base, sections, url } from '../data/lib';
+import { faq } from '../data/faq';
+import { site as brand } from '../data/site.mjs';
+
+const { entry } = Astro.locals.starlightRoute;
+const data = entry.data;
+const site = Astro.site ?? new URL('http://localhost:4321');
+const abs = (p: string) => new URL(p, site).href;
+const pageUrl = abs(Astro.url.pathname);
+const root = abs(`${base}/`);
+const isHome = data.template === 'splash';
+const is404 = entry.id === '404';
+const dateModified = data.lastUpdated instanceof Date ? data.lastUpdated.toISOString().slice(0, 10) : undefined;
+
+const orgId = 'https://celerolab.com/#organization';
+const siteId = `${root}#website`;
+const license = 'https://creativecommons.org/licenses/by-sa/4.0/';
+const units = sections.flatMap((s) => s.units.map((u) => ({ ...u, section: s })));
+
+const graph: object[] = [
+  {
+    '@type': 'Organization', '@id': orgId, name: 'CeleroLab', url: brand.celeroUrl,
+    logo: { '@type': 'ImageObject', url: 'https://celerolab.com/icon-512x512.png' },
+  },
+  {
+    '@type': 'WebSite', '@id': siteId, url: root, name: brand.name, alternateName: `${brand.name}: ${brand.tagline}`, inLanguage: 'es',
+    description: brand.description, publisher: { '@id': orgId }, license,
+  },
+];
+
+if (isHome) {
+  graph.push({
+    '@type': 'FAQPage', '@id': `${pageUrl}#faq`, inLanguage: 'es',
+    mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  });
+  // Las ocho unidades como lista ordenada: da a buscadores y asistentes el mapa del contenido.
+  graph.push({
+    '@type': 'ItemList', '@id': `${pageUrl}#units`, name: 'Unidades de Networking', itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    itemListElement: units.map((u, i) => ({ '@type': 'ListItem', position: i + 1, name: u.title, description: u.blurb, url: abs(url(`${u.section.id}/${u.id}`)) })),
+  });
+} else if (!is404) {
+  const unit = units.find((u) => u.id === data.unit);
+  graph.push({
+    '@type': 'LearningResource', '@id': `${pageUrl}#resource`, url: pageUrl, inLanguage: 'es', name: data.title,
+    description: data.description, isPartOf: { '@id': siteId }, author: { '@id': orgId }, publisher: { '@id': orgId },
+    license, isAccessibleForFree: true, learningResourceType: data.kind, dateModified,
+    timeRequired: data.minutes ? `PT${data.minutes}M` : undefined,
+    teaches: unit?.blurb, about: unit ? { '@type': 'Thing', name: unit.title } : undefined,
+    audience: { '@type': 'EducationalAudience', educationalRole: 'student' },
+  });
+  const crumbs = [...crumbsFor(entry.id), { label: data.title as string }];
+  graph.push({
+    '@type': 'BreadcrumbList', '@id': `${pageUrl}#breadcrumb`,
+    itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.label, item: 'href' in c && c.href ? abs(c.href) : pageUrl })),
+  });
+}
+
+const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
+---
+
+<Default {...Astro.props}><slot /></Default>
+<meta name="robots" content={is404 ? 'noindex, follow' : 'index, follow, max-snippet:-1, max-image-preview:large'} />
+{dateModified && <meta property="article:modified_time" content={dateModified} />}
+<link rel="preload" as="font" type="font/woff2" href={archivoLatin} crossorigin />
+<script type="application/ld+json" set:html={jsonld} />
+<script>
+  // Accesibilidad: un bloque de código con scroll horizontal debe poder enfocarse con teclado (WCAG 2.1.1).
+  const fix = () =>
+    document.querySelectorAll<HTMLElement>('.expressive-code pre').forEach((pre) => {
+      if (pre.scrollWidth > pre.clientWidth && !pre.hasAttribute('tabindex')) {
+        pre.tabIndex = 0;
+        pre.setAttribute('role', 'region');
+        pre.setAttribute('aria-label', 'Bloque de código (desplazable)');
+      }
+    });
+  addEventListener('DOMContentLoaded', fix);
+  addEventListener('load', fix);
+  addEventListener('resize', fix, { passive: true });
+</script>

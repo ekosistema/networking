@@ -1,0 +1,2 @@
+# Contenido en Markdown: siempre LF, en cualquier sistema
+*.md text eol=lf

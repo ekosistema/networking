@@ -1,0 +1,25 @@
+name: Propuesta de contenido o mejora
+description: Sugiere una pieza nueva, una ampliación, una explicación mejor o una mejora de la web
+title: "[Propuesta] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: propuesta
+    attributes:
+      label: ¿Qué propones?
+      description: Tema o mejora, y qué cubriría o cambiaría.
+    validations:
+      required: true
+  - type: textarea
+    id: motivo
+    attributes:
+      label: ¿Por qué encaja en Networking?
+      description: A quién ayudaría y qué aporta frente a lo que ya hay.
+    validations:
+      required: true
+  - type: checkboxes
+    id: colaboracion
+    attributes:
+      label: Colaboración
+      options:
+        - label: Me gustaría redactarlo yo y enviar un Pull Request

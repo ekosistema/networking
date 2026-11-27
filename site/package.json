@@ -1,0 +1,27 @@
+{
+  "name": "networking-site",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "sync": "node scripts/sync-content.mjs",
+    "logo": "node scripts/make-logo.mjs",
+    "og": "node scripts/make-og.mjs",
+    "check:seo": "node scripts/check-seo.mjs",
+    "dev": "npm run sync && astro dev",
+    "build": "npm run sync && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.10",
+    "@astrojs/sitemap": "^3.7.6",
+    "@astrojs/starlight": "^0.43.2",
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource/archivo": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "astro": "^7.4.13"
+  },
+  "devDependencies": {
+    "opentype.js": "^2.0.0"
+  }
+}

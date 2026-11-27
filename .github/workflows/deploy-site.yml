@@ -1,0 +1,58 @@
+name: Desplegar sitio
+
+on:
+  push:
+    branches: [main]
+    paths: ['0*/**', 'README.md', 'site/**', 'scripts/**', 'LICENSE', '.github/workflows/deploy-site.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0   # historial completo: las fechas de última modificación salen de git
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - name: Comprobar contenido
+        run: node scripts/check-content.mjs
+      - name: Instalar dependencias del sitio
+        run: npm ci
+        working-directory: site
+      - name: Compilar
+        run: npm run build
+        working-directory: site
+        env:
+          # Dominio propio (CNAME en site/public): la base queda vacía.
+          SITE_URL: https://networking.celerolab.com
+      - name: Auditoría SEO y GEO
+        run: npm run check:seo
+        working-directory: site
+        env:
+          SITE_URL: https://networking.celerolab.com
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

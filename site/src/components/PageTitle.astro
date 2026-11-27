@@ -1,0 +1,74 @@
+---
+// Título de página: migas de pan arriba y, en las páginas de una unidad, una franja con los datos de la pieza
+// (qué es, cuánto se tarda) y las pestañas de la unidad. Reemplaza al anterior/siguiente como ayuda de orientación.
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import { crumbsFor, unitTabs, sections, kinds } from '../data/lib';
+
+const { entry } = Astro.locals.starlightRoute;
+const isHome = entry.data.template === 'splash';
+const crumbs = crumbsFor(entry.id);
+const tabs = unitTabs(entry.id);
+const kind = kinds.find((k) => k.id === entry.data.kind);
+const section = sections.find((s) => s.id === entry.data.section);
+const minutes = entry.data.minutes as number | undefined;
+---
+
+{isHome ? null : (
+  <>
+    {crumbs.length > 1 && (
+      <nav class="crumbs not-content" aria-label="Migas de pan">
+        <ol>
+          {crumbs.map((c) => (<li>{c.href ? <a href={c.href}>{c.label}</a> : <span>{c.label}</span>}</li>))}
+        </ol>
+      </nav>
+    )}
+    <Default {...Astro.props}><slot /></Default>
+
+    {(kind || tabs) && (
+      <div class="meta not-content" data-section={section?.id}>
+        {section && <span class="chip chip-section">{section.title}</span>}
+        {kind && <span class="chip chip-kind"><b>{kind.verb}</b> {kind.why}</span>}
+        {minutes && <span class="chip"><b>Lectura</b> ~{minutes} min</span>}
+      </div>
+    )}
+
+    {tabs && (
+      <nav class="tabs not-content" aria-label={`Piezas de ${tabs.unit.title}`}>
+        <ul>
+          {tabs.tabs.map((t) => (<li><a href={t.href} aria-current={t.current ? 'page' : undefined}>{t.label}</a></li>))}
+        </ul>
+      </nav>
+    )}
+  </>
+)}
+
+<style>
+  .crumbs { margin-bottom: calc(var(--ds-space-2) * -1); }
+  ol { display: flex; flex-wrap: wrap; align-items: center; margin: 0; padding: 0; list-style: none; font-size: var(--sl-text-xs); }
+  li { margin: 0; display: inline-flex; align-items: center; }
+  .crumbs li + li::before { content: '›'; margin-inline: var(--ds-space-2); color: var(--ds-text-subtle); }
+  .crumbs a { display: inline-flex; align-items: center; min-height: var(--ds-target-min); color: var(--ds-text-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--ds-text); text-decoration: underline; text-underline-offset: .2em; }
+  .crumbs span { color: var(--ds-text-subtle); }
+
+  .meta { display: flex; flex-wrap: wrap; gap: var(--ds-space-2); margin-top: var(--ds-space-3); }
+  .chip {
+    font-family: var(--ds-font-display); display: inline-flex; align-items: baseline; gap: .4rem; padding: .22rem .7rem; font-size: var(--sl-text-xs); line-height: 1.4;
+    border: 1px solid var(--ds-border); border-radius: var(--ds-radius-pill); background: var(--ds-surface-raised); color: var(--ds-text-muted);
+  }
+  .chip b { font-weight: 700; color: var(--ds-text); }
+  .chip-section { font-weight: 700; color: var(--bc); border-color: color-mix(in srgb, var(--bc) 40%, transparent); background: color-mix(in srgb, var(--bc) 12%, transparent); }
+  [data-section='diseno'] { --bc: var(--ds-block-diseno); }
+  [data-section='implantacion'] { --bc: var(--ds-block-implantacion); }
+  [data-section='administracion'] { --bc: var(--ds-block-administracion); }
+  .chip-kind b { color: var(--ds-accent-text); text-transform: uppercase; letter-spacing: .05em; font-size: .68rem; }
+
+  .tabs { margin-top: var(--ds-space-4); overflow-x: auto; border-bottom: 1px solid var(--ds-border); }
+  .tabs ul { display: flex; gap: var(--ds-space-1); min-width: max-content; }
+  .tabs a {
+    font-family: var(--ds-font-display); display: inline-flex; align-items: center; min-height: 2.5rem; padding: 0 var(--ds-space-3); font-size: var(--sl-text-sm); font-weight: 600;
+    color: var(--ds-text-muted); text-decoration: none; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tabs a:hover { color: var(--ds-text); }
+  .tabs a[aria-current='page'] { color: var(--ds-accent-text); border-bottom-color: var(--ds-accent); }
+</style>

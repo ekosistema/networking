@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+
+# Generado por scripts/sync-content.mjs (la fuente de verdad son los .md de la raíz del repositorio)
+src/content/docs/
+
+# Generado por sync-content.mjs (fechas de última modificación para el sitemap)
+src/data/lastmod.json

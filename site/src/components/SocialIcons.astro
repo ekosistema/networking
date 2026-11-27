@@ -1,0 +1,28 @@
+---
+// Navegación principal en la cabecera (Ruta · Glosario · Formulario) antes de los iconos sociales.
+import Default from '@astrojs/starlight/components/SocialIcons.astro';
+import { url } from '../data/lib';
+
+const path = Astro.url.pathname;
+const links = [
+  { label: 'Ruta', href: url('ruta') },
+  { label: 'Glosario', href: url('glosario') },
+  { label: 'Formulario', href: url('formulario') },
+].map((l) => ({ ...l, active: path.startsWith(l.href) }));
+---
+
+<nav class="topnav" aria-label="Principal">
+  {links.map((l) => (<a href={l.href} aria-current={l.active ? 'page' : undefined}>{l.label}</a>))}
+</nav>
+<Default {...Astro.props}><slot /></Default>
+
+<style>
+  .topnav { display: flex; gap: var(--ds-space-1); margin-inline-end: var(--ds-space-3); }
+  .topnav a {
+    font-family: var(--ds-font-display); display: inline-flex; align-items: center; min-height: 2rem; padding: 0 var(--ds-space-3); border-radius: var(--ds-radius-sm);
+    font-size: var(--sl-text-sm); font-weight: 600; color: var(--ds-text-muted); text-decoration: none;
+  }
+  .topnav a:hover { color: var(--ds-text); background: var(--ds-surface-raised); }
+  .topnav a[aria-current='page'] { color: var(--ds-accent-text); background: var(--ds-accent-wash); }
+  @media (max-width: 50rem) { .topnav { display: none; } }
+</style>

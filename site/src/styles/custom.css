@@ -1,0 +1,129 @@
+/* Capa de integración: mapea los tokens (tokens.css) a Starlight y define patrones compartidos.
+   Los estilos de cada componente viven en el propio componente. Ver DESIGN.md. */
+
+@import './tokens.css';
+@import './content.css';
+
+:root {
+  --sl-font: 'Archivo Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --sl-font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Code', Menlo, monospace;
+  --sl-content-width: var(--ds-content-width);
+  --sl-sidebar-width: 19rem;
+  --sl-text-h2: 1.65rem;
+  --sl-text-h3: 1.3rem;
+
+  /* Starlight ← tokens */
+  --sl-color-accent-low: var(--ds-accent-wash);
+  --sl-color-accent: var(--ds-accent);
+  --sl-color-accent-high: var(--ds-accent-text);
+  --sl-color-white: var(--ds-text);
+  --sl-color-black: var(--ds-bg);
+  --sl-color-bg-nav: var(--ds-surface);
+  --sl-color-hairline: var(--ds-border);
+  --sl-color-hairline-light: var(--ds-border);
+}
+
+:root:not([data-theme='light']) {
+  --sl-color-gray-1: #e2e4f0;
+  --sl-color-gray-2: var(--ds-text-muted);
+  --sl-color-gray-3: var(--ds-text-subtle);
+  --sl-color-gray-4: #4b5068;
+  --sl-color-gray-5: #272b3d;
+  --sl-color-gray-6: var(--ds-surface-raised);
+  --sl-color-bg-sidebar: #0d1019;
+  --sl-color-hairline-shade: #07080d;
+}
+
+:root[data-theme='light'] {
+  --sl-color-gray-1: #1f2338;
+  --sl-color-gray-2: var(--ds-text-muted);
+  --sl-color-gray-3: var(--ds-text-subtle);
+  --sl-color-gray-4: #9a9eb8;
+  --sl-color-gray-5: #dfe1ee;
+  --sl-color-gray-6: var(--ds-surface-raised);
+  --sl-color-gray-7: #f7f8fc;
+  --sl-color-bg-sidebar: #f7f8fc;
+  --sl-color-hairline-shade: #cfd2e4;
+}
+
+html { overflow-x: clip; scroll-padding-top: calc(var(--sl-nav-height) + 1rem); }
+body { -webkit-font-smoothing: antialiased; overflow-x: clip; }
+
+/* ── Cabecera ─────────────────────────────────────────────── */
+/* Logotipo discreto: ocupa poco de la cabecera y deja protagonismo al buscador y a la navegación */
+.site-title img { height: 1.5rem; width: auto; }
+.site-title { gap: 0; }
+header.header {
+  backdrop-filter: saturate(160%) blur(12px);
+  background: color-mix(in srgb, var(--ds-surface) 84%, transparent);
+}
+
+/* ── Títulos y rótulos: la misma sans que el texto, con más peso y el tracking justo ── */
+h1, h2, h3, h4, h5, h6, .site-title, header .title-wrapper,
+.sl-markdown-content :is(h1, h2, h3, h4),
+.sidebar-content details > summary .large, starlight-toc summary, .right-sidebar h2,
+.pagination-links .link-title { font-family: var(--ds-font-display); }
+h1, .sl-markdown-content :is(h2, h3) { letter-spacing: -.01em; }
+h1, h2, h3 { font-weight: 600; }
+
+/* ── Contenido ────────────────────────────────────────────── */
+.sl-markdown-content :is(h2, h3) { letter-spacing: -.015em; }
+.sl-markdown-content h2 { margin-top: var(--ds-space-7); }
+.sl-markdown-content p, .sl-markdown-content li { max-width: var(--ds-measure); }
+.sl-markdown-content a:not(:where(.not-content *)) { text-underline-offset: .18em; text-decoration-thickness: 1px; }
+.sl-markdown-content th { background: var(--ds-surface-raised); }
+.sl-markdown-content blockquote:not(:where(.not-content *)) {
+  border-inline-start: 3px solid var(--ds-accent);
+  background: color-mix(in srgb, var(--ds-accent) 8%, transparent);
+  border-radius: 0 var(--ds-radius-md) var(--ds-radius-md) 0;
+  padding: var(--ds-space-2) var(--ds-space-4); margin-inline: 0;
+}
+.sl-markdown-content blockquote > :first-child { margin-top: 0; }
+.sl-markdown-content blockquote > :last-child { margin-bottom: 0; }
+.sl-markdown-content :not(pre) > code {
+  border-radius: var(--ds-radius-sm); background: var(--ds-surface-raised);
+  border: 1px solid var(--ds-border); padding: .08em .35em; font-size: .88em;
+}
+/* Los esquemas ASCII necesitan ancho fijo y no ajustan línea */
+.sl-markdown-content pre code { white-space: pre; }
+
+/* ── Menú lateral explicativo ─────────────────────────────── */
+.sidebar-content { gap: var(--ds-space-3); }
+.sidebar-content summary { min-height: var(--ds-target-min); }
+.sidebar-content details > summary .large { font-size: var(--sl-text-sm); font-weight: 600; letter-spacing: .01em; line-height: 1.35; }
+.sidebar-content a { min-height: var(--ds-target-min); display: flex; align-items: center; line-height: 1.35; }
+.sidebar-content a[aria-current='page'] { background: var(--ds-accent); color: var(--ds-on-accent); font-weight: 600; }
+
+/* ── Anterior / siguiente: solo dentro de una unidad o de un audio en dos partes ── */
+.pagination-links { gap: var(--ds-space-3); }
+.pagination-links a { border-radius: var(--ds-radius-md); border-color: var(--ds-border); background: var(--ds-surface); }
+.pagination-links a:hover { border-color: var(--ds-accent); }
+
+/* ── Patrones de página ───────────────────────────────────── */
+body:has(.hero) { --sl-content-width: var(--ds-wide-width); }
+/* En la portada no hay título de página: se quita el panel vacío que lo alojaba y la línea que lo separaba,
+   que cortaba el fondo del hero. */
+body:has(.hero) .content-panel:first-child { display: none; }
+body:has(.hero) .content-panel { border-top: 0; padding-top: 0; }
+.home-section { margin-top: var(--ds-space-8); content-visibility: auto; contain-intrinsic-size: auto 28rem; }
+/* Sin `padding` abreviado: el padding final del h2 es el hueco donde Starlight coloca el icono de enlace */
+.home-section h2 { margin: 0 !important; border: 0 !important; padding-block: 0 !important; padding-inline-start: 0 !important; font-size: var(--sl-text-h2); letter-spacing: -.02em; }
+.home-section .lede { margin: var(--ds-space-2) 0 0; color: var(--ds-text-muted); max-width: var(--ds-measure); }
+
+.sl-markdown-content .sl-anchor-link { opacity: .55; transition: opacity var(--ds-dur); }
+.sl-markdown-content .sl-anchor-link:is(:hover, :focus-visible),
+.sl-markdown-content .sl-heading-wrapper:hover .sl-anchor-link { opacity: 1; }
+
+/* ── Accesibilidad ────────────────────────────────────────── */
+:focus-visible { outline: 3px solid var(--ds-focus); outline-offset: 2px; border-radius: var(--ds-radius-sm); }
+
+@media (pointer: coarse) {
+  .sidebar-content a, .sidebar-content summary { min-height: var(--ds-target-touch); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; scroll-behavior: auto !important;
+  }
+}

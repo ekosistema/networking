@@ -1,0 +1,26 @@
+name: Error o dato desactualizado
+description: Una unidad contiene un error, una norma derogada, un enlace roto o información obsoleta
+title: "[Error] "
+labels: ["documentation"]
+body:
+  - type: input
+    id: pagina
+    attributes:
+      label: Página o fichero afectado
+      description: URL de la web o ruta del fichero (por ejemplo 03_Administracion/01_Equipos_Servicios/Equipos_Tecnico.md)
+    validations:
+      required: true
+  - type: textarea
+    id: problema
+    attributes:
+      label: ¿Qué está mal?
+      description: Describe el error, el cálculo que no sale, el enlace roto o el dato desactualizado.
+    validations:
+      required: true
+  - type: textarea
+    id: correccion
+    attributes:
+      label: Corrección propuesta y fuente
+      description: Si puedes, indica qué debería decir y enlaza la fuente oficial (BOE, norma, documentación del fabricante).
+    validations:
+      required: false

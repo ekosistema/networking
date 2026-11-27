@@ -1,0 +1,28 @@
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Obsidian: configuracion local de cada maquina, no versionar
+.obsidian/
+.trash/
+
+# Python
+__pycache__/
+*.pyc
+
+# Herramientas de build locales (scripts, temporales)
+_build/
+
+# PDF generados (carpeta aparte, no se versionan)
+_pdf/
+
+# Contexto de agentes (local, no versionado)
+CLAUDE.md
+AGENTS.md
+ROADMAP.md
+
+# Sitio Astro
+site/node_modules/
+site/dist/
+site/.astro/

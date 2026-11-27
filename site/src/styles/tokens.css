@@ -1,0 +1,82 @@
+/* Design tokens (ver DESIGN.md). Tres niveles:
+   1. Primitivos   → --ds-indigo-*, --ds-cyan-*…  (valores crudos, no se usan en componentes)
+   2. Semánticos   → --ds-surface, --ds-text, --ds-accent, --ds-block-*…  (cambian con el tema)
+   3. De sistema   → espaciado, radios, movimiento  (no cambian con el tema)
+   Los componentes solo consumen semánticos y de sistema. */
+
+:root {
+  /* ── Sistema ─────────────────────────────────────────── */
+  --ds-space-1: .25rem;   /*  4px */
+  --ds-space-2: .5rem;    /*  8px */
+  --ds-space-3: .75rem;   /* 12px */
+  --ds-space-4: 1rem;     /* 16px */
+  --ds-space-5: 1.5rem;   /* 24px */
+  --ds-space-6: 2rem;     /* 32px */
+  --ds-space-7: 3rem;     /* 48px */
+  --ds-space-8: 4.5rem;   /* 72px */
+
+  --ds-radius-sm: .4rem;
+  --ds-radius-md: .7rem;
+  --ds-radius-lg: 1rem;
+  --ds-radius-pill: 999px;
+
+  --ds-ease: cubic-bezier(.2, .7, .2, 1);
+  --ds-dur-fast: .15s;
+  --ds-dur: .25s;
+
+  --ds-target-min: 1.75rem;    /* 28px: por encima del mínimo WCAG 2.2 (24px) */
+  --ds-target-touch: 2.75rem;  /* 44px en punteros táctiles */
+
+  --ds-font-display: 'Archivo Variable', system-ui, -apple-system, 'Segoe UI', sans-serif; /* títulos, etiquetas y navegación: la misma sans que el texto */
+  --ds-measure: 68ch;          /* ancho máximo de línea de lectura */
+  --ds-content-width: 50rem;
+  --ds-wide-width: 72rem;
+
+  /* ── Primitivos ──────────────────────────────────────── */
+  --ds-indigo-300: #c7c0ff; --ds-indigo-500: #7c6cff; --ds-indigo-700: #5b45f0; --ds-indigo-900: #3a28b8;
+  --ds-cyan-400: #22d3ee;   --ds-cyan-700: #0e7490;
+  --ds-amber-400: #fbbf24;  --ds-amber-800: #92400e;
+  --ds-green-400: #34d399;  --ds-green-700: #047857;
+
+  /* ── Semánticos · tema oscuro (por defecto) ──────────── */
+  --ds-bg: #0b0d14;
+  --ds-surface: #10131d;           /* tarjetas, cabecera */
+  --ds-surface-raised: #171a27;    /* chips, tablas, código en línea */
+  --ds-border: #232739;
+  --ds-text: #f4f5fb;
+  --ds-text-muted: #b8bcd2;        /* ≥ 9:1 sobre bg */
+  --ds-text-subtle: #8a8fab;       /* ≥ 5.5:1 sobre surface */
+  --ds-accent: var(--ds-indigo-500);
+  --ds-accent-text: var(--ds-indigo-300);
+  --ds-accent-wash: #1c1a4b;
+  --ds-on-accent: #0b0d14;
+  --ds-focus: #a79cff;
+
+  /* Un color por bloque: nunca es el único canal (siempre va con su nombre) */
+  --ds-block-diseno: var(--ds-indigo-300);
+  --ds-block-implantacion: var(--ds-amber-400);
+  --ds-block-administracion: var(--ds-cyan-400);
+
+  --ds-shadow-card: 0 14px 34px -18px rgb(0 0 0 / .7);
+}
+
+:root[data-theme='light'] {
+  --ds-bg: #ffffff;
+  --ds-surface: #ffffff;
+  --ds-surface-raised: #f0f1f8;
+  --ds-border: #dfe1ee;
+  --ds-text: #0f1222;
+  --ds-text-muted: #3b405a;
+  --ds-text-subtle: #5d627e;       /* 6:1 sobre blanco */
+  --ds-accent: var(--ds-indigo-700);
+  --ds-accent-text: var(--ds-indigo-900);
+  --ds-accent-wash: #e6e3ff;
+  --ds-on-accent: #ffffff;
+  --ds-focus: #5b45f0;
+
+  --ds-block-diseno: var(--ds-indigo-700);
+  --ds-block-implantacion: var(--ds-amber-800);
+  --ds-block-administracion: var(--ds-cyan-700);
+
+  --ds-shadow-card: 0 14px 30px -20px rgb(30 30 80 / .35);
+}

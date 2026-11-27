@@ -1,0 +1,253 @@
+---
+// Portada de Networking. Una sola idea: aprender redes en el orden del oficio (diseñar, implantar, administrar).
+// Estructura: hero con esquema de red · tres bloques · cómo se estudia una unidad · tres formas de entrar · FAQ.
+// El crédito a CeleroLab y la licencia viven en el pie de página (Footer.astro): no se repiten aquí.
+import { sections, kinds, url } from '../data/lib';
+import { faq } from '../data/faq';
+
+const units = sections.flatMap((s) => s.units);
+const stats = [
+  { n: units.length, l: 'unidades' },
+  { n: units.length * 6, l: 'casos resueltos' },
+  { n: units.length * 2, l: 'audioapuntes' },
+];
+const entries = [
+  { t: 'Empiezo de cero', d: 'Sigue la ruta: el orden recomendado, el ritmo semanal y el método para que se quede.', a: 'Ver la ruta', href: url('ruta'), n: '1' },
+  { t: 'Busco un dato', d: 'Fórmulas, subredes, categorías de cable, puertos y un glosario de siglas.', a: 'Abrir el formulario', href: url('formulario'), n: '2' },
+  { t: 'Quiero repasar', d: 'Un resumen por unidad con la idea, las cifras y los errores típicos.', a: 'Ir al resumen', href: url('resumen'), n: '3' },
+];
+---
+
+<section class="hero not-content" aria-labelledby="hero-title">
+  <div class="copy">
+    <p class="eyebrow"><i aria-hidden="true"></i> Guía abierta · en español</p>
+    <h1 id="hero-title">Aprende a diseñar, implantar y administrar <span>redes</span></h1>
+    <p class="sub">
+      Ocho unidades que siguen el orden del oficio, con explicaciones desde cero, casos resueltos, laboratorio
+      y audio. Para estudiar con método y para consultar cuando hace falta.
+    </p>
+
+    <button type="button" class="search" data-hero-search>
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <span>Busca un concepto, una sigla o un comando…</span>
+      <kbd aria-hidden="true">Ctrl K</kbd>
+    </button>
+
+    <div class="cta">
+      <a class="btn primary" href={url('ruta')}>Empezar por la ruta</a>
+      <a class="btn" href={url('indice')}>Ver el índice</a>
+    </div>
+
+    <ul class="stats" aria-label="El material en cifras">
+      {stats.map((s) => (<li><strong>{s.n}</strong><span>{s.l}</span></li>))}
+    </ul>
+  </div>
+
+  <figure class="net" aria-labelledby="net-cap">
+    <svg viewBox="0 0 440 360" role="img" aria-label="Esquema de una red con tres capas: núcleo, distribución y acceso">
+      <g class="links" fill="none" stroke-width="2.5" stroke-linecap="round">
+        <path class="l d" d="M220 62 L120 150"/><path class="l d" d="M220 62 L320 150"/><path class="l d" d="M120 150 L320 150"/>
+        <path class="l i" d="M120 150 L60 262"/><path class="l i" d="M120 150 L150 262"/><path class="l i" d="M320 150 L290 262"/><path class="l i" d="M320 150 L380 262"/>
+        <path class="l a" d="M60 262 L60 318"/><path class="l a" d="M150 262 L150 318"/><path class="l a" d="M290 262 L290 318"/><path class="l a" d="M380 262 L380 318"/>
+      </g>
+      <g class="nodes">
+        <circle class="n d" cx="220" cy="62" r="26"/><text x="220" y="67" text-anchor="middle">Núcleo</text>
+        <circle class="n d" cx="120" cy="150" r="22"/><circle class="n d" cx="320" cy="150" r="22"/>
+        <rect class="n i" x="42" y="244" width="36" height="36" rx="9"/><rect class="n i" x="132" y="244" width="36" height="36" rx="9"/>
+        <rect class="n i" x="272" y="244" width="36" height="36" rx="9"/><rect class="n i" x="362" y="244" width="36" height="36" rx="9"/>
+        <rect class="n a" x="48" y="318" width="24" height="24" rx="6"/><rect class="n a" x="138" y="318" width="24" height="24" rx="6"/>
+        <rect class="n a" x="278" y="318" width="24" height="24" rx="6"/><rect class="n a" x="368" y="318" width="24" height="24" rx="6"/>
+      </g>
+    </svg>
+    <figcaption id="net-cap">
+      <span class="k d">Diseño</span><span class="k i">Implantación</span><span class="k a">Administración</span>
+    </figcaption>
+  </figure>
+</section>
+
+<section class="home-section not-content" aria-labelledby="blocks-title">
+  <h2 id="blocks-title">Los tres lados del oficio</h2>
+  <p class="lede">Una red se decide, se construye y se mantiene. Cada bloque responde a una pregunta distinta.</p>
+  <div class="blocks">
+    {sections.map((s) => (
+      <article class="block" data-b={s.id}>
+        <p class="q">{s.question}</p>
+        <h3><a href={url(s.id)}>{s.title}</a></h3>
+        <ul>
+          {s.units.map((u) => (
+            <li><a href={url(`${s.id}/${u.id}`)}><strong>{u.title}</strong><span>{u.blurb}</span></a></li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </div>
+</section>
+
+<section class="home-section not-content" aria-labelledby="steps-title">
+  <h2 id="steps-title">Cada unidad, seis formas de estudiarla</h2>
+  <p class="lede">No se lee igual para entender que para consultar. Cada pieza tiene su momento.</p>
+  <ol class="steps">
+    {kinds.map((k, i) => (
+      <li>
+        <span class="num" aria-hidden="true">{i + 1}</span>
+        <strong>{k.verb}</strong>
+        <span class="what">{k.label}</span>
+        <p>{k.why}</p>
+        <small>{k.time}</small>
+      </li>
+    ))}
+  </ol>
+  <p class="aside">Y de propina, <a href={url('audio')}>audioapuntes</a> de cada unidad para repasar escuchando.</p>
+</section>
+
+<section class="home-section not-content" aria-labelledby="entry-title">
+  <h2 id="entry-title">Entra por donde te convenga</h2>
+  <div class="entries">
+    {entries.map((e) => (
+      <a class="entry" href={e.href}>
+        <span class="num" aria-hidden="true">{e.n}</span>
+        <strong>{e.t}</strong>
+        <p>{e.d}</p>
+        <span class="go">{e.a} →</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<section class="home-section not-content" aria-labelledby="faq-title">
+  <h2 id="faq-title">Preguntas frecuentes</h2>
+  <div class="faq">
+    {faq.map((f) => (
+      <details>
+        <summary><span>{f.q}</span></summary>
+        <p>{f.a}</p>
+      </details>
+    ))}
+  </div>
+</section>
+
+<script>
+  // El botón de la portada abre el buscador real de Starlight (Pagefind).
+  document.querySelector<HTMLButtonElement>('[data-hero-search]')?.addEventListener('click', () => {
+    document.querySelector<HTMLButtonElement>('site-search button[data-open-modal]')?.click();
+  });
+</script>
+
+<style>
+  /* Color por bloque (diseño, implantación, administración) */
+  [data-b='diseno'], .d { --bc: var(--ds-block-diseno); }
+  [data-b='implantacion'], .i { --bc: var(--ds-block-implantacion); }
+  [data-b='administracion'], .a { --bc: var(--ds-block-administracion); }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+    gap: var(--ds-space-7); align-items: center; padding: var(--ds-space-7) 0 var(--ds-space-6);
+  }
+  .hero::before, .hero::after { content: ''; position: absolute; z-index: -1; inset: -6rem auto 0 50%; width: 100vw; transform: translateX(-50%); pointer-events: none; }
+  .hero::before {
+    background:
+      radial-gradient(45rem 22rem at 18% 0%, color-mix(in srgb, var(--ds-accent) 26%, transparent), transparent 70%),
+      radial-gradient(35rem 20rem at 85% 20%, color-mix(in srgb, var(--ds-cyan-400) 14%, transparent), transparent 70%);
+    -webkit-mask-image: linear-gradient(#000 60%, transparent); mask-image: linear-gradient(#000 60%, transparent);
+  }
+  .hero::after {
+    opacity: .3; background-image: linear-gradient(var(--ds-border) 1px, transparent 1px), linear-gradient(90deg, var(--ds-border) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(60rem 22rem at 30% 0%, #000, transparent 75%); mask-image: radial-gradient(60rem 22rem at 30% 0%, #000, transparent 75%);
+  }
+  .eyebrow { font-family: var(--ds-font-display);
+    display: inline-flex; align-items: center; gap: var(--ds-space-2); margin: 0 0 var(--ds-space-4); padding: .3rem .8rem;
+    font-size: var(--sl-text-xs); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--ds-accent-text);
+    border: 1px solid color-mix(in srgb, var(--ds-accent) 40%, transparent); border-radius: var(--ds-radius-pill); background: color-mix(in srgb, var(--ds-accent) 12%, transparent);
+  }
+  .eyebrow i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--ds-green-400); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ds-green-400) 25%, transparent); }
+  h1 { margin: 0; font-family: var(--ds-font-display); font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 1.08; letter-spacing: -.02em; font-weight: 600; color: var(--ds-text); }
+  h1 span { color: var(--ds-accent-text); background: linear-gradient(95deg, var(--ds-accent-text), var(--ds-cyan-400)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .sub { margin: var(--ds-space-4) 0 0; max-width: 52ch; font-size: var(--sl-text-lg); line-height: 1.6; color: var(--ds-text-muted); }
+
+  .search {
+    display: flex; align-items: center; gap: var(--ds-space-3); width: 100%; max-width: 30rem; margin-top: var(--ds-space-6); min-height: 3rem; padding: 0 var(--ds-space-4);
+    font: inherit; font-size: var(--sl-text-sm); text-align: start; cursor: text; color: var(--ds-text-subtle);
+    background: var(--ds-surface); border: 1px solid var(--ds-border); border-radius: var(--ds-radius-md); transition: border-color var(--ds-dur-fast), box-shadow var(--ds-dur-fast);
+  }
+  .search:hover { border-color: var(--ds-accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ds-accent) 15%, transparent); }
+  .search span { flex: 1; }
+  .search kbd { font: 600 var(--sl-text-xs) var(--sl-font-mono); padding: .15rem .45rem; border: 1px solid var(--ds-border); border-radius: var(--ds-radius-sm); color: var(--ds-text-subtle); background: var(--ds-surface-raised); }
+
+  .cta { display: flex; flex-wrap: wrap; gap: var(--ds-space-3); margin-top: var(--ds-space-4); }
+  .btn { font-family: var(--ds-font-display);
+    display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 var(--ds-space-5); border-radius: var(--ds-radius-md); font-weight: 600; text-decoration: none;
+    color: var(--ds-text); border: 1px solid var(--sl-color-gray-4); background: var(--ds-surface); transition: transform var(--ds-dur-fast), border-color var(--ds-dur-fast);
+  }
+  .btn:hover { transform: translateY(-2px); border-color: var(--ds-accent); }
+  .btn.primary { color: var(--ds-on-accent); border-color: transparent; background: var(--ds-accent); box-shadow: 0 10px 28px -12px var(--ds-accent); }
+  :root:not([data-theme='light']) .btn.primary { color: #0b0d14; background: linear-gradient(135deg, #9d90ff, #6fe0f2); }
+
+  .stats { display: grid; grid-template-columns: repeat(3, max-content); gap: var(--ds-space-3) var(--ds-space-7); margin: var(--ds-space-6) 0 0; padding: 0; list-style: none; }
+  .stats li { display: flex; flex-direction: column; gap: var(--ds-space-1); margin: 0; }
+  .stats strong { font-family: var(--ds-font-display); font-size: 2rem; font-weight: 800; line-height: 1; color: var(--ds-text); font-variant-numeric: tabular-nums; }
+  .stats span { font-size: var(--sl-text-xs); color: var(--ds-text-subtle); text-transform: uppercase; letter-spacing: .06em; }
+
+  /* Esquema de red */
+  .net { margin: 0; padding: var(--ds-space-5); border: 1px solid var(--ds-border); border-radius: var(--ds-radius-lg); background: color-mix(in srgb, var(--ds-surface) 88%, transparent); box-shadow: var(--ds-shadow-card); }
+  .net svg { display: block; width: 100%; height: auto; }
+  .l { stroke: color-mix(in srgb, var(--bc) 70%, transparent); stroke-dasharray: 4 8; animation: flow 1.6s linear infinite; }
+  .n { fill: color-mix(in srgb, var(--bc) 22%, var(--ds-surface)); stroke: var(--bc); stroke-width: 2.5; }
+  .nodes text { font: 700 11px var(--sl-font); fill: var(--ds-text); }
+  .net figcaption { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--ds-space-2); margin-top: var(--ds-space-3); }
+  .k { font-family: var(--ds-font-display); padding: .2rem .7rem; font-size: var(--sl-text-xs); font-weight: 700; color: var(--bc); border: 1px solid color-mix(in srgb, var(--bc) 45%, transparent); border-radius: var(--ds-radius-pill); background: color-mix(in srgb, var(--bc) 12%, transparent); }
+  @keyframes flow { to { stroke-dashoffset: -24; } }
+
+  /* ── Bloques ── */
+  .blocks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--ds-space-4); margin-top: var(--ds-space-5); }
+  .block { display: flex; flex-direction: column; padding: var(--ds-space-5); border: 1px solid var(--ds-border); border-top: 4px solid var(--bc); border-radius: var(--ds-radius-lg); background: var(--ds-surface); box-shadow: var(--ds-shadow-card); }
+  .block .q { font-family: var(--ds-font-display); margin: 0; font-size: var(--sl-text-xs); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--bc); }
+  .block h3 { font-family: var(--ds-font-display); margin: var(--ds-space-2) 0 var(--ds-space-4); font-size: var(--sl-text-h3); letter-spacing: -.01em; }
+  .block h3 a { color: var(--ds-text); text-decoration: none; }
+  .block h3 a:hover { text-decoration: underline; text-underline-offset: .2em; }
+  .block ul { display: grid; gap: var(--ds-space-1); margin: 0; padding: 0; list-style: none; }
+  .block li { margin: 0; }
+  .block li a { display: grid; gap: .1rem; padding: var(--ds-space-2) var(--ds-space-3); border-radius: var(--ds-radius-md); text-decoration: none; color: var(--ds-text-muted); transition: background var(--ds-dur-fast); }
+  .block li a:hover { background: color-mix(in srgb, var(--bc) 10%, transparent); }
+  .block li strong { color: var(--ds-text); font-size: var(--sl-text-sm); }
+  .block li span { font-size: var(--sl-text-xs); line-height: 1.5; }
+
+  /* ── Pasos ── */
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--ds-space-4); margin: var(--ds-space-5) 0 0; padding: 0; list-style: none; counter-reset: s; }
+  .steps li { position: relative; display: flex; flex-direction: column; gap: .2rem; margin: 0; padding: var(--ds-space-4) var(--ds-space-5) var(--ds-space-4) 4rem; border: 1px solid var(--ds-border); border-radius: var(--ds-radius-lg); background: var(--ds-surface); }
+  .num { font-family: var(--ds-font-display); position: absolute; inset-block-start: var(--ds-space-4); inset-inline-start: var(--ds-space-4); display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; font-weight: 800; color: var(--ds-on-accent); background: var(--ds-accent); }
+  .steps strong { font-family: var(--ds-font-display); font-size: var(--sl-text-lg); color: var(--ds-text); line-height: 1.2; }
+  .steps .what { font-family: var(--ds-font-display); font-size: var(--sl-text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--ds-accent-text); }
+  .steps p { margin: .3rem 0 0; font-size: var(--sl-text-sm); line-height: 1.55; color: var(--ds-text-muted); }
+  .steps small { margin-top: auto; padding-top: var(--ds-space-2); font-size: var(--sl-text-xs); color: var(--ds-text-subtle); }
+  .aside { margin: var(--ds-space-4) 0 0; color: var(--ds-text-muted); }
+
+  /* ── Entradas ── */
+  .entries { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--ds-space-4); margin-top: var(--ds-space-5); }
+  .entry { position: relative; display: flex; flex-direction: column; gap: .3rem; padding: var(--ds-space-5) var(--ds-space-5) var(--ds-space-5) 4.2rem; border: 1px solid var(--ds-border); border-radius: var(--ds-radius-lg); background: var(--ds-surface); text-decoration: none; transition: transform var(--ds-dur-fast), border-color var(--ds-dur-fast), box-shadow var(--ds-dur-fast); }
+  .entry:hover { transform: translateY(-3px); border-color: var(--ds-accent); box-shadow: var(--ds-shadow-card); }
+  .entry .num { inset-block-start: var(--ds-space-5); inset-inline-start: var(--ds-space-5); }
+  .entry strong { font-family: var(--ds-font-display); font-size: var(--sl-text-lg); color: var(--ds-text); }
+  .entry p { margin: 0; font-size: var(--sl-text-sm); line-height: 1.55; color: var(--ds-text-muted); }
+  .entry .go { margin-top: var(--ds-space-2); font-weight: 600; font-size: var(--sl-text-sm); color: var(--ds-accent-text); }
+
+  /* ── FAQ ── */
+  .faq { display: grid; gap: var(--ds-space-2); margin-top: var(--ds-space-5); max-width: var(--ds-content-width); }
+  details { border: 1px solid var(--ds-border); border-radius: var(--ds-radius-md); background: var(--ds-surface); }
+  summary { display: flex; align-items: center; justify-content: space-between; gap: var(--ds-space-4); min-height: 3rem; padding: var(--ds-space-2) var(--ds-space-4); font-weight: 600; color: var(--ds-text); cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; flex: none; width: 1.5rem; text-align: center; font-size: 1.4rem; line-height: 1; color: var(--ds-accent-text); transition: transform var(--ds-dur); }
+  details[open] > summary::after { transform: rotate(45deg); }
+  details[open] { border-color: color-mix(in srgb, var(--ds-accent) 50%, var(--ds-border)); }
+  details p { margin: 0; padding: 0 var(--ds-space-4) var(--ds-space-4); color: var(--ds-text-muted); line-height: 1.65; max-width: var(--ds-measure); }
+
+  @media (prefers-reduced-motion: reduce) { .l { animation: none; } }
+  @media (forced-colors: active) { h1 span { -webkit-text-fill-color: currentColor; background: none; } .n, .block, .steps li, .entry { border: 1px solid CanvasText; } }
+  @media (max-width: 62rem) {
+    .hero { grid-template-columns: 1fr; padding-top: var(--ds-space-5); gap: var(--ds-space-6); }
+    .blocks, .steps, .entries { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 40rem) and (max-width: 62rem) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 30rem) { .stats { grid-template-columns: repeat(3, 1fr); gap: var(--ds-space-3); } .search kbd { display: none; } }
+</style>
